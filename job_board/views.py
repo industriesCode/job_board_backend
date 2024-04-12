@@ -1,0 +1,47 @@
+from .models import Job
+from rest_framework import status
+from rest_framework import generics
+from .serializers import JobSerializer
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from rest_framework.authtoken.models import Token
+
+
+@api_view(['POST'])
+def signup(request):
+    username = request.data.get('username')
+    password = request.data.get('password')
+    if username and password:
+        # Check if the username already exists
+        if User.objects.filter(username=username).exists():
+            return Response({'error': 'Username already exists'}, status=status.HTTP_400_BAD_REQUEST)
+        # Create the user
+        user = User.objects.create_user(username=username, password=password)
+        # Create token
+        token, created = Token.objects.get_or_create(user=user)
+        print(token)
+        return Response({'token': token.key}, status=status.HTTP_201_CREATED)
+    return Response({'error': 'Invalid request'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+def login(request):
+    username = request.data.get('username')
+    password = request.data.get('password')
+    if username and password:
+        user = authenticate(username=username, password=password)
+        if user:
+            token, created = Token.objects.get_or_create(user=user)
+            return Response({'token': token.key}, status=status.HTTP_200_OK)
+    return Response({'error': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class JobListCreateAPIView(generics.ListCreateAPIView):
+    queryset = Job.objects.all()
+    serializer_class = JobSerializer
+
+class JobRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Job.objects.all()
+    serializer_class = JobSerializer
