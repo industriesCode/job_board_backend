@@ -22,6 +22,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/signup/', signup, name='signup'),
     path('api/login/', login, name='login'),
-    path('jobs/', JobListCreateAPIView.as_view(), name='job-list-create'),
-    path('jobs/<int:pk>/', JobRetrieveUpdateDestroyAPIView.as_view(), name='job-detail'),
+    path('api/jobs/', JobListCreateAPIView.as_view(), name='job-list-create'),
+    path('api/jobs/<int:pk>/', JobRetrieveUpdateDestroyAPIView.as_view(), name='job-detail'),
 ]

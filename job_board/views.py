@@ -1,12 +1,13 @@
-from .models import Job
 from rest_framework import status
 from rest_framework import generics
-from .serializers import JobSerializer
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.authtoken.models import Token
+
+from job_board.models import Job
+from job_board.serializers import JobSerializer
 
 
 @api_view(['POST'])
@@ -34,13 +35,18 @@ def login(request):
         user = authenticate(username=username, password=password)
         if user:
             token, created = Token.objects.get_or_create(user=user)
-            return Response({'token': token.key}, status=status.HTTP_200_OK)
+            return Response({
+                'token': token.key,
+                'username': username,
+                'user_pk': user.pk
+            }, status=status.HTTP_200_OK)
     return Response({'error': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class JobListCreateAPIView(generics.ListCreateAPIView):
     queryset = Job.objects.all()
     serializer_class = JobSerializer
+
 
 class JobRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Job.objects.all()
