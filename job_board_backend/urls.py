@@ -16,12 +16,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from job_board.views import signup, login, JobListCreateAPIView, JobRetrieveUpdateDestroyAPIView
+from job_board.views import signup, login, JobListCreateAPIView, JobRetrieveUpdateDestroyAPIView, AllJobListAPIView, \
+    UserJobListAPIView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/signup/', signup, name='signup'),
     path('api/login/', login, name='login'),
+    path('api/jobs/all/', AllJobListAPIView.as_view(), name='all-job-list'),
+    path('api/jobs/user/', UserJobListAPIView.as_view(), name='user-job-list'),
     path('api/jobs/', JobListCreateAPIView.as_view(), name='job-list-create'),
     path('api/jobs/<int:pk>/', JobRetrieveUpdateDestroyAPIView.as_view(), name='job-detail'),
 ]

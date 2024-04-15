@@ -43,9 +43,29 @@ def login(request):
     return Response({'error': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
 
 
-class JobListCreateAPIView(generics.ListCreateAPIView):
-    queryset = Job.objects.all()
+class AllJobListAPIView(generics.ListAPIView):
     serializer_class = JobSerializer
+    queryset = Job.objects.all()
+
+
+class UserJobListAPIView(generics.ListAPIView):
+    serializer_class = JobSerializer
+
+    def get_queryset(self):
+        return Job.objects.filter(created_by=self.request.user)
+
+
+class JobListCreateAPIView(generics.ListCreateAPIView):
+    serializer_class = JobSerializer
+
+    def get_queryset(self):
+        # Retrieve the current authenticated user (assuming you're using token authentication)
+        user = self.request.user
+
+        # Filter jobs based on the user who created them
+        queryset = Job.objects.filter(created_by=user)
+
+        return queryset
 
 
 class JobRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
