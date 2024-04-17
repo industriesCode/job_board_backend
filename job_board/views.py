@@ -71,3 +71,15 @@ class JobListCreateAPIView(generics.ListCreateAPIView):
 class JobRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Job.objects.all()
     serializer_class = JobSerializer
+
+    def put(self, request, *args, **kwargs):
+        job = self.get_object()
+        user = request.user
+        if user.pk == job.created_by:
+            return Response({"error": "You cannot apply to your own job."}, status=status.HTTP_400_BAD_REQUEST)
+
+        job.applicants.add(user)
+        job.save()
+
+        serializer = self.get_serializer(job)
+        return Response(serializer.data)
