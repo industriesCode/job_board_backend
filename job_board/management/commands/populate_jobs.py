@@ -12,21 +12,25 @@ class Command(BaseCommand):
                 'title': 'Software Engineer',
                 'description': 'Develop software applications',
                 'location': 'New York',
-                'experience': 3
+                'experience': 3,
+                'applicants': []
             },
             {
                 'company': 'Dell',
                 'title': 'Data Scientist',
                 'description': 'Analyze data and build predictive models',
                 'location': 'San Francisco',
-                'experience': 5
+                'experience': 5,
+                'applicants': []
             },
             {
                 'company': 'Quark',
                 'title': 'UI/UX Designer',
                 'description': 'Design user interfaces for web and mobile apps',
                 'location': 'London',
-                'experience': 2
+                'experience': 2,
+                'applicants': []
+
             },
         ]
 
